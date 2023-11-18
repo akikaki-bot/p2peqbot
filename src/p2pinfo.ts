@@ -2,14 +2,19 @@
 
 
 import { Client as P2PClient } from "p2peq_event";
-import { ChannelSendManager, IChannelSendManager } from "./client/sendManager";
 import { ResolveNullishNumber } from "./utils/resolveNumber";
 import { ResolveTsunamiInfomation } from "./utils/resolveTsunami";
-import { AreaSender } from "./client/areaSender";
 import { ResolveType } from "./utils/resolveType";
-import { TsunamiSender } from "./client/tsunamiSender";
 
-const client = new P2PClient({sandboxUri : "wss://api-realtime-sandbox.p2pquake.net/v2/ws"})
+import { 
+    ChannelSendManager,
+    IChannelSendManager , 
+    EEWSender , 
+    TsunamiSender, 
+    AreaSender
+} from "./client/";
+
+const client = new P2PClient()
 
 client.on('ready', ( data ) => {
     console.log(`${data.connection} | ${data.wsurl}\n Successfully connected at p2p earthquake server. `)
@@ -39,4 +44,16 @@ client.on('tsunamiwarning', ( data ) => {
 
     new ChannelSendManager(Infomation).build();
     new TsunamiSender(data);
+})
+
+client.on('eew', ( data ) => {
+    const Infomation : IChannelSendManager = {
+        title : `緊急地震速報 - ${data.test ? "テスト" : "警報"}`,
+        description : `緊急地震速報です。\n対象地域は5弱以上の揺れが予想されます。\n落ち着いて身の安全を図ってください。\n\n・震源情報\n**${data.earthquake.hypocenter.name}** / M ${data.earthquake.hypocenter.magunitude} / 深さ ${data.earthquake.hypocenter.depth}km \n\n 対象地域は以下の通りです。 \n 発表時刻：\`${data.time}\``,
+        page : 1,
+        maxPage : 1
+    }
+
+    new ChannelSendManager(Infomation).build();
+    new EEWSender(data)
 })

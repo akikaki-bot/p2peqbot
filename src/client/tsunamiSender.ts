@@ -2,8 +2,7 @@ import { Tsunami } from "p2peq_event";
 
 
 import { TsunamiAreas , TsunamiTypes } from "p2peq_event/dist/src/types"
-import { ChannelSendManager, IChannelSendManager } from "./sendManager";
-import { ResolveTsunamiInfomation } from "../utils/resolveTsunami";
+import { ChannelSendManager, IChannelSendManager } from "./";
 import { ResolveTsunamiType } from "../utils/resolveTsunamiTypes";
 
 export class TsunamiSender {

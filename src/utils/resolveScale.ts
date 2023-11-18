@@ -1,7 +1,8 @@
 import { Scale } from "p2peq_event/dist/src/types";
 
 
-export function ResolveScale( scale : Scale ) {
+export function ResolveScale( scale : Scale | number ) {
+    if(scale === -1) return "不明"
     const _scale = scale.toString()
     switch( _scale ){
         case "10":

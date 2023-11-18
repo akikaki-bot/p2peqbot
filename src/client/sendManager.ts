@@ -1,6 +1,5 @@
 
 import {
-    Client,
     TextChannel,
     NewsChannel,
     EmbedBuilder

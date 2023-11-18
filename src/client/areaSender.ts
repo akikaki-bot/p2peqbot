@@ -1,6 +1,6 @@
 import { PointFormat } from "p2peq_event/dist/src/types";
 import { ResolveScale } from "../utils/resolveScale";
-import { ChannelSendManager, IChannelSendManager } from "./sendManager"
+import { ChannelSendManager, IChannelSendManager } from "./"
 
 
 export class AreaSender {
