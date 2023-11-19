@@ -2,7 +2,8 @@
 import {
     TextChannel,
     NewsChannel,
-    EmbedBuilder
+    EmbedBuilder,
+    ColorResolvable
 } from "discord.js"
 import { Channels } from "../constants/channels";
 import { client } from ".";
@@ -11,13 +12,14 @@ export class ChannelSendManager {
 
     private data : IChannelSendManager;
 
-    constructor( data : IChannelSendManager) {
+    constructor( data : IChannelSendManager ) {
         this.data = data;
     }
 
     async build() {
         const _data = this.data
-        const embed = new EmbedBuilder().setTitle( _data.title ?? "不明な情報種別" ).setDescription( _data.description ?? "不明な情報説明" ).setFooter({ text : `EarthQuakeBot | AreaPage - ${_data.page ?? 1}/${_data.maxPage ?? 1}` })
+        console.log(_data )
+        const embed = new EmbedBuilder().setTitle( _data.title ?? "不明な情報種別" ).setDescription( _data.description ?? "不明な情報説明" ).setFooter({ text : `EarthQuakeBot | AreaPage - ${_data.page ?? 1}/${_data.maxPage ?? 1}` }).setColor( _data.color ?? "Default" )
 
         await this.send(embed)
     }
@@ -41,4 +43,5 @@ export interface IChannelSendManager {
     description : string
     page ?: number
     maxPage ?: number
+    color ?: ColorResolvable
 }

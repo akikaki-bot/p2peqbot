@@ -17,6 +17,9 @@ client.on('ready', () => {
     console.log(`
         Logined at ${client.user?.username}
     `)
+    client.user?.setActivity({
+        name : "Producted by https://sdev.aknet.tech/"
+    })
 })
 
 

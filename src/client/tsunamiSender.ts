@@ -4,6 +4,7 @@ import { Tsunami } from "p2peq_event";
 import { TsunamiAreas , TsunamiTypes } from "p2peq_event/dist/src/types"
 import { ChannelSendManager, IChannelSendManager } from "./";
 import { ResolveTsunamiType } from "../utils/resolveTsunamiTypes";
+import { ResolveTsunamiColor } from "../utils/resolveTsunamiColor";
 
 export class TsunamiSender {
 
@@ -27,7 +28,8 @@ export class TsunamiSender {
                         title : `津波予報 - ${ResolveTsunamiType(info.grade)}(${_ + 1}/${arr.length})`,
                         description : areaText.join('\n'),
                         page : index + 1,
-                        maxPage : chunk.length
+                        maxPage : chunk.length,
+                        color : ResolveTsunamiColor( info.grade )
                     } as IChannelSendManager
                 })
             )

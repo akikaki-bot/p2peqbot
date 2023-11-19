@@ -1,20 +1,17 @@
-import { PointFormat } from "p2peq_event/dist/src/types";
+import { PointFormat, Scale } from "p2peq_event/dist/src/types";
 import { ResolveScale } from "../utils/resolveScale";
 import { ChannelSendManager, IChannelSendManager } from "./"
+import { ResolveSindoColor } from "../utils/resolveShindoColor";
 
 
 export class AreaSender {
 
     private point: PointFormat[]
-    private points: number
-    private thinkPage: number
-    private allPage: number
+    private maxScale : Scale
 
-    constructor(data: PointFormat[]) {
+    constructor(data: PointFormat[], maxScale : Scale ) {
         this.point = data;
-        this.points = data.length;
-        this.thinkPage = 1;
-        this.allPage = Math.round(data.length / 20) + 1
+        this.maxScale = maxScale
 
         this.init()
     }
@@ -30,7 +27,8 @@ export class AreaSender {
                         title : `地域ごとの震度分布 - ${info.name} (${_ + 1}/${arr.length})`,
                         description : area.join('\n'),
                         page : index + 1,
-                        maxPage : chunk.length
+                        maxPage : chunk.length,
+                        color : ResolveSindoColor( this.maxScale )
                     } as IChannelSendManager
                 })
             )
