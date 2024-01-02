@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "discord.js": "^14.14.1",
-    "p2peq_event": "^4.0.2"
+    "p2peq_event": "^4.1.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

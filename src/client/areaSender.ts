@@ -1,15 +1,16 @@
-import { PointFormat, Scale } from "p2peq_event/dist/src/types";
+import { PointFormat } from "p2peq_event/dist/src/types";
 import { ResolveScale } from "../utils/resolveScale";
 import { ChannelSendManager, IChannelSendManager } from "./"
 import { ResolveSindoColor } from "../utils/resolveShindoColor";
+import { Points, Scale } from "p2peq_event/dist/src/types/jmaquake";
 
 
 export class AreaSender {
 
-    private point: PointFormat[]
-    private maxScale : Scale
+    private point: Points[]
+    private maxScale : Scale | -1
 
-    constructor(data: PointFormat[], maxScale : Scale ) {
+    constructor(data: Points[], maxScale : Scale | -1 ) {
         this.point = data;
         this.maxScale = maxScale
 
@@ -18,7 +19,7 @@ export class AreaSender {
 
     private async init() {
         const PrefChunked = this.prefChunk(this.point)
-        const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<PointFormat>(chunked.areas, 25) }))
+        const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<Points>(chunked.areas, 25) }))
         const chunkedInfo = Points.map(points => ({ name: points.name, areas : points.areas.map(chunkedArea => chunkedArea.map((area) => `[${ResolveScale(area.scale)}] ${area.addr}`)) }))
         const Manager = chunkedInfo.map(
             (info, index, chunk) => (
@@ -40,7 +41,7 @@ export class AreaSender {
         ])
     }
 
-    private prefChunk<T extends PointFormat>(prefInfos : T[]) {
+    private prefChunk<T extends Points>(prefInfos : T[]) {
         const Prefs : string[] = []
         prefInfos.map((points, _ ) => !Prefs.includes(points.pref) && Prefs.push(points.pref))
         return Prefs.map((prefName) => ({ name : prefName, areas : prefInfos.filter((points, _) => points.pref === prefName) }))

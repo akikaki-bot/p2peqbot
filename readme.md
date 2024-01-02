@@ -10,6 +10,7 @@
 ## 使用パッケージ
 
 - p2peq_event 4.0.2 (自作)
+- wolfxClient 1.0.0 (自作)
 - discord.js 14.14.1
 
 ## はじめに
@@ -33,10 +34,10 @@ $ ts-node src/index.ts
 
 - 地震情報
 - 津波情報
+- 緊急地震速報（警報）
+- 緊急地震速報（予報）
 
-の2つです。
-
-今後、`緊急地震速報`に対応させる予定です。
+の4つです。
 
 - 地震情報
 
@@ -46,4 +47,6 @@ $ ts-node src/index.ts
 
 ![preview2](./images/preview2.png)
 
+- 緊急地震速報（予報）
 
+![preview3](./images/preview3.png)

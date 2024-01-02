@@ -1,9 +1,9 @@
 import { Colors } from "discord.js";
-import { Scale } from "p2peq_event/dist/src/types";
+import { Scale } from "p2peq_event/dist/src/types/jmaquake";
 
 
 
-export function ResolveSindoColor ( _sindo : Scale ) {
+export function ResolveSindoColor ( _sindo : Scale | -1 ) {
     const sindo = _sindo.toString();
     switch ( sindo ) {
         case "10":

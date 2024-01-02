@@ -19,7 +19,7 @@ export class ChannelSendManager {
     async build() {
         const _data = this.data
         console.log(_data )
-        const embed = new EmbedBuilder().setTitle( _data.title ?? "不明な情報種別" ).setDescription( _data.description ?? "不明な情報説明" ).setFooter({ text : `EarthQuakeBot | AreaPage - ${_data.page ?? 1}/${_data.maxPage ?? 1}` }).setColor( _data.color ?? "Default" )
+        const embed = new EmbedBuilder().setTitle( _data.title ?? "不明な情報種別" ).setDescription( _data.description ?? "不明な情報説明" ).setFooter({ text : `EarthQuakeBot | ${typeof _data.footerText !== "undefined" ? _data.footerText : "AreaPage"} - ${_data.page ?? 1}/${_data.maxPage ?? 1}` }).setColor( _data.color ?? "Default" )
 
         await this.send(embed)
     }
@@ -44,4 +44,5 @@ export interface IChannelSendManager {
     page ?: number
     maxPage ?: number
     color ?: ColorResolvable
+    footerText ?: string
 }

@@ -5,20 +5,46 @@ import { Client as P2PClient } from "p2peq_event";
 import { ResolveNullishNumber } from "./utils/resolveNumber";
 import { ResolveTsunamiInfomation } from "./utils/resolveTsunami";
 import { ResolveType } from "./utils/resolveType";
+import { ResolveSindoColor } from "./utils/resolveShindoColor";
+import { ResolveAccuracy } from "./utils/resolveAccuracyWay";
 
 import { 
     ChannelSendManager,
     IChannelSendManager , 
     EEWSender , 
     TsunamiSender, 
-    AreaSender
+    AreaSender,
+    WolfxManager
 } from "./client/";
-import { ResolveSindoColor } from "./utils/resolveShindoColor";
+import { ResolveSindoString } from "./utils/resolveSindoNumber";
+import { IfCancel, ResolveCancel } from "./utils/resolveCancel";
 
-const client = new P2PClient({ sandboxUri : "wss://api-realtime-sandbox.p2pquake.net/v2/ws" })
+
+
+const client = new P2PClient()
+const wolfxClient = new WolfxManager()
 
 client.on('ready', ( data ) => {
     console.log(`${data.connection} | ${data.wsurl}\n Successfully connected at p2p earthquake server. `)
+})
+
+wolfxClient.on('open', () => {
+    console.log(` Successfully connected at Wolfx server.`)
+})
+
+wolfxClient.on('eew', ( data ) => {
+
+    const Infomation : IChannelSendManager = {
+        title : ResolveCancel( data.isCancel , `緊急地震速報 (${data.isWarn ? "警報" : "予報"}) - ${data.isFinal ? "最終" : "第"+data.Serial}報` ),
+        description : IfCancel( data.isCancel , `\n・震源・規模情報\n**${data.Hypocenter ?? `不明`}** (${ResolveAccuracy(data.Accuracy.Epicenter)})  \n M ${ResolveNullishNumber(data.Magunitude)} / 深さ ${ResolveNullishNumber(data.Depth)}km \n\n \`\`\`\n震源に近い地域では*最大震度${data.MaxIntensity}程度*の揺れが予想されます。\n\`\`\``),
+        page : 1,
+        maxPage: 1,
+        footerText : `EEWInfomation | EventID : ${data.EventID} `,
+        color : ResolveSindoColor( ResolveSindoString( data.MaxIntensity ) )
+    }
+
+    new ChannelSendManager(Infomation).build();
+
 })
 
 client.on("earthquake", ( data ) => {
@@ -34,6 +60,8 @@ client.on("earthquake", ( data ) => {
     new ChannelSendManager(FirstInfomation).build();
     new AreaSender(data.points, data.earthquake.maxScale )
 })
+
+client.on('infomations', (data) => console.log(data.code))
 
 client.on('tsunamiwarning', ( data ) => {
 
@@ -52,7 +80,7 @@ client.on('tsunamiwarning', ( data ) => {
 client.on('eew', ( data ) => {
     const Infomation : IChannelSendManager = {
         title : `緊急地震速報 - ${data.test ? "テスト" : "警報"}`,
-        description : `緊急地震速報です。\n対象地域は5弱以上の揺れが予想されます。\n落ち着いて身の安全を図ってください。\n\n・震源情報\n**${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.name : "不明"}** / M ${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.magunitude : "不明"} / 深さ ${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.depth : "不明"}km \n\n 対象地域は以下の通りです。 \n 発表時刻：\`${data.time}\``,
+        description : `緊急地震速報です。\n対象地域は5弱以上の揺れが予想されます。\n落ち着いて身の安全を図ってください。\n\n・震源情報\n**${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.name : "不明"}** / M ${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.magnitude : "不明"} / 深さ ${typeof data.earthquake !== "undefined" ? data.earthquake.hypocenter.depth : "不明"}km \n\n 対象地域は以下の通りです。 \n 発表時刻：\`${data.time}\``,
         page : 1,
         maxPage : 1,
         color : "Red"

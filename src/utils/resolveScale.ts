@@ -15,6 +15,8 @@ export function ResolveScale( scale : Scale | number ) {
             return 4
         case "45":
             return "5弱"
+        case "46":
+            return "5弱↑?"
         case "50":
             return "5強"
         case "55":
