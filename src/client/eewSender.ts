@@ -2,6 +2,7 @@ import { DetailEEW, IEEWArea } from "p2peq_event/dist/src/components/detaileew";
 import { ResolveScale } from "../utils/resolveScale";
 import { ChannelSendManager, IChannelSendManager } from "./";
 import { EEWArea } from "p2peq_event/dist/src/types/eew";
+import { ResolveSendCategory } from "../utils/resolveSendCategory";
 
 
 
@@ -29,7 +30,8 @@ export class EEWSender {
                         description : areaText.join('\n'),
                         page : index + 1,
                         maxPage : chunk.length,
-                        color : "DarkRed"
+                        color : "DarkRed",
+                        sendCategory : [ ResolveSendCategory( 1 ), ResolveSendCategory( 2 ), ResolveSendCategory( 3 )]
                     } as IChannelSendManager
                 })
             )

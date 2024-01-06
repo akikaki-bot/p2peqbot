@@ -10,6 +10,7 @@ export class WolfxManager extends EventEmitter {
 
 
     private ws : WebSocket;
+    private sindo : string;
 
     constructor() {
         super()
@@ -22,7 +23,24 @@ export class WolfxManager extends EventEmitter {
         this.ws.on('open', () => this.emit('open', () => {}))
         this.ws.on('message', ( message : any ) => {
             const data = JSON.parse( message ) as WolflxParser | IHeartbeat ;
-            data.type === "jma_eew" && this.emit('eew', new WolflxParser(data));
+            data.type === "heartbeat" && this.emit('ping', JSON.parse( JSON.stringify( data )) as IHeartbeat )
+            if( data.type === "jma_eew" ){
+
+                const parsed = new WolflxParser( data )
+                
+                if( parsed.Serial === "1" ){
+                    this.sindo = parsed.MaxIntensity
+                    this.emit('eew', parsed)
+                }
+                if( this.sindo !== parsed.MaxIntensity) {
+                    this.sindo = parsed.MaxIntensity;
+                    this.emit('eew', parsed)
+                }
+                if( parsed.isFinal ) {
+                    this.emit('eew', parsed)
+                }
+                
+            }
         })
         this.ws.on('close', () => this.recconnect())
     }
@@ -37,4 +55,5 @@ export class WolfxManager extends EventEmitter {
 export interface WolfxManager {
     on(event : 'open', listener : () => void) : this
     on(event : 'eew', listener : ( data : WolflxParser ) => void) : this
+    on(event : 'ping', listener : ( data : IHeartbeat ) => void ): this
 }

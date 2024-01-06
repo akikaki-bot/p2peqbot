@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "@keyv/sqlite": "^3.6.6",
     "discord.js": "^14.14.1",
+    "keyv": "^4.5.4",
     "p2peq_event": "^4.1.0"
   },
   "devDependencies": {

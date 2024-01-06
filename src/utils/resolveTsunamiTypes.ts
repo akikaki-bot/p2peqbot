@@ -1,6 +1,6 @@
 
 
-import { TsunamiTypes } from "p2peq_event/dist/src/types"
+import { TsunamiTypes } from "../../node_modules/p2peq_event/dist/src/types/jmatsunami"
 
 export function ResolveTsunamiType ( type : TsunamiTypes ){
     switch(type) {

@@ -5,6 +5,7 @@ import { TsunamiAreas, TsunamiTypes } from "p2peq_event/dist/src/types"
 import { ChannelSendManager, IChannelSendManager } from "./";
 import { ResolveTsunamiType } from "../utils/resolveTsunamiTypes";
 import { ResolveTsunamiColor } from "../utils/resolveTsunamiColor";
+import { ResolveSendCategory } from "../utils/resolveSendCategory";
 
 export class TsunamiSender {
 
@@ -29,7 +30,8 @@ export class TsunamiSender {
                         description : areaText.join('\n'),
                         page : index + 1,
                         maxPage : chunk.length,
-                        color : ResolveTsunamiColor( info.grade )
+                        color : ResolveTsunamiColor( info.grade ),
+                        sendCategory : [ ResolveSendCategory( 1 ) , ResolveSendCategory( 5 )]
                     } as IChannelSendManager
                 })
             )

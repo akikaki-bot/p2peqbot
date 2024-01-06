@@ -1,3 +1,4 @@
 src/constants/token.ts
 package-lock.json
 node_modules
+dist/*

@@ -3,6 +3,7 @@ import { ResolveScale } from "../utils/resolveScale";
 import { ChannelSendManager, IChannelSendManager } from "./"
 import { ResolveSindoColor } from "../utils/resolveShindoColor";
 import { Points, Scale } from "p2peq_event/dist/src/types/jmaquake";
+import { ResolveSendCategory } from "../utils/resolveSendCategory";
 
 
 export class AreaSender {
@@ -19,7 +20,7 @@ export class AreaSender {
 
     private async init() {
         const PrefChunked = this.prefChunk(this.point)
-        const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<Points>(chunked.areas, 25) }))
+        const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<Points>(chunked.areas, 30) }))
         const chunkedInfo = Points.map(points => ({ name: points.name, areas : points.areas.map(chunkedArea => chunkedArea.map((area) => `[${ResolveScale(area.scale)}] ${area.addr}`)) }))
         const Manager = chunkedInfo.map(
             (info, index, chunk) => (
@@ -29,16 +30,16 @@ export class AreaSender {
                         description : area.join('\n'),
                         page : index + 1,
                         maxPage : chunk.length,
-                        color : ResolveSindoColor( this.maxScale )
+                        color : ResolveSindoColor( this.maxScale ),
+                        sendCategory : [ ResolveSendCategory( 1 ), ResolveSendCategory( 4 ) ]
                     } as IChannelSendManager
                 })
             )
         )
 
         const FlatedManager = Manager.flat(2).filter((val) => typeof val !== "number")
-        await Promise.all([
-            FlatedManager.map(manager => new ChannelSendManager(manager).build())
-        ])
+        FlatedManager.map(manager => new ChannelSendManager(manager).build())
+        
     }
 
     private prefChunk<T extends Points>(prefInfos : T[]) {

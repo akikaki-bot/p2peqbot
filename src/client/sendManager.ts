@@ -3,17 +3,23 @@ import {
     TextChannel,
     NewsChannel,
     EmbedBuilder,
-    ColorResolvable
+    ColorResolvable,
+    ChannelType
 } from "discord.js"
-import { Channels } from "../constants/channels";
+//import { Channels } from "../constants/channels";
 import { client } from ".";
+import * as Keyv from "keyv"
+import { SendCategory } from "../utils/resolveSendCategory";
+
 
 export class ChannelSendManager {
 
     private data : IChannelSendManager;
+    private db : Keyv<any>
 
     constructor( data : IChannelSendManager ) {
         this.data = data;
+        this.db = new Keyv(`sqlite://db/channels.dat`)
     }
 
     async build() {
@@ -25,14 +31,30 @@ export class ChannelSendManager {
     }
 
     async send( embed : EmbedBuilder ) {
+
+        const PromisedChannel = await this.db.get(`channels`) 
+        const GuildChannels = JSON.parse( PromisedChannel )  as { guildId: string, datas : { channelId : string , type : SendCategory }[] }[]
+
+        if(!Array.isArray(GuildChannels)) throw new Error('Guild channels data broken.')
+
         await Promise.all([
-            Channels.map(async id => {
-                const Channel = client.channels.resolve(id)
-                if(Channel?.isTextBased() && Channel instanceof ( TextChannel || NewsChannel ) ){
-                    await Channel.send({
-                        embeds : [embed]
-                    })
-                }
+            GuildChannels.map(async guildData => {
+                guildData.datas.map(async id => {
+                    const catgoryMatched = this.data.sendCategory.some(v => v.type === id.type.type)
+                    if( !catgoryMatched ) return;
+                    const Channel = client.channels.resolve( id.channelId )
+                    if(Channel?.isTextBased() && ( Channel instanceof ( TextChannel || NewsChannel ) || Channel.type === ChannelType.GuildAnnouncement) ){
+                        const Message = await Channel.send({
+                            embeds : [embed]
+                        })
+                        if(Channel.type === ChannelType.GuildAnnouncement) {
+                            if(Message.crosspostable) {
+                                Message.crosspost()
+                                .catch((err) => console.log(err))
+                            }
+                        }
+                    }
+                })
             })
         ])
     }
@@ -45,4 +67,5 @@ export interface IChannelSendManager {
     maxPage ?: number
     color ?: ColorResolvable
     footerText ?: string
+    sendCategory : SendCategory[]
 }

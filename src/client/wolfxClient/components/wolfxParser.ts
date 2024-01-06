@@ -40,7 +40,7 @@ export class WolflxParser {
     isSea : boolean
     /** 訓練？ */
     isTraining : boolean
-    /** 推定の方法がわかる？ */
+    /** 仮定震源要素か？ */
     isAssumption : boolean
     /** 警報？ */
     isWarn : boolean

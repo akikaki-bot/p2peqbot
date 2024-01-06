@@ -1,0 +1,1 @@
+export { RegisterManager } from "./components/client"
