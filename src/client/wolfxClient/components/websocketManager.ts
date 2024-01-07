@@ -10,7 +10,8 @@ export class WolfxManager extends EventEmitter {
 
 
     private ws : WebSocket;
-    private sindo : string;
+    
+    private eewDatas : { eventId : string; Int : string; isEmited : boolean; }[]
 
     constructor() {
         super()
@@ -29,15 +30,24 @@ export class WolfxManager extends EventEmitter {
                 const parsed = new WolflxParser( data )
                 
                 if( parsed.Serial === "1" ){
-                    this.sindo = parsed.MaxIntensity
+                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , isEmited : true })
                     this.emit('eew', parsed)
+                    return;
                 }
-                if( this.sindo !== parsed.MaxIntensity) {
-                    this.sindo = parsed.MaxIntensity;
-                    this.emit('eew', parsed)
+                const EEWData = this.eewDatas.find( data => data.eventId === parsed.EventID );
+                if(!EEWData) {
+                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , isEmited : true });
+                    this.emit('eew' , parsed)
+                    return;
+                }
+                if( EEWData.Int !== parsed.MaxIntensity) {
+                    this.emit('eew', parsed);
+                    this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
+                    this.eewDatas.push({ eventId : EEWData.eventId , Int : parsed.MaxIntensity , isEmited : true })
                 }
                 if( parsed.isFinal ) {
-                    this.emit('eew', parsed)
+                    this.emit('eew', parsed);
+                    this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
                 }
                 
             }
