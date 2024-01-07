@@ -17,6 +17,8 @@ export class WolfxManager extends EventEmitter {
         super()
         this.ws = new WebSocket("wss://ws-api.wolfx.jp/jma_eew");
         this.run()
+        this.eewDatas = [];
+
     }
 
     private async run() {
@@ -34,6 +36,7 @@ export class WolfxManager extends EventEmitter {
                     this.emit('eew', parsed)
                     return;
                 }
+                
                 const EEWData = this.eewDatas.find( data => data.eventId === parsed.EventID );
                 if(!EEWData) {
                     this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , isEmited : true });
@@ -49,7 +52,6 @@ export class WolfxManager extends EventEmitter {
                     this.emit('eew', parsed);
                     this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
                 }
-                
             }
         })
         this.ws.on('close', () => this.recconnect())
