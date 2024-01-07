@@ -24,7 +24,7 @@ export class ChannelSendManager {
 
     async build() {
         const _data = this.data
-        console.log(_data )
+        console.log( _data )
         const embed = new EmbedBuilder().setTitle( _data.title ?? "不明な情報種別" ).setDescription( _data.description ?? "不明な情報説明" ).setFooter({ text : `EarthQuakeBot | ${typeof _data.footerText !== "undefined" ? _data.footerText : "AreaPage"} - ${_data.page ?? 1}/${_data.maxPage ?? 1}` }).setColor( _data.color ?? "Default" )
 
         await this.send(embed)
@@ -46,7 +46,8 @@ export class ChannelSendManager {
                     if(Channel?.isTextBased() && ( Channel instanceof ( TextChannel || NewsChannel ) || Channel.type === ChannelType.GuildAnnouncement) ){
                         const Message = await Channel.send({
                             embeds : [embed]
-                        })
+                        }).catch(err => console.log(err))
+                        if(typeof Message !== "object") return;
                         if(Channel.type === ChannelType.GuildAnnouncement) {
                             if(Message.crosspostable) {
                                 Message.crosspost()

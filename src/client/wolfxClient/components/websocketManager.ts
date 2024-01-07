@@ -11,7 +11,7 @@ export class WolfxManager extends EventEmitter {
 
     private ws : WebSocket;
     
-    private eewDatas : { eventId : string; Int : string; isEmited : boolean; }[]
+    private eewDatas : { eventId : string; Int : string; isEmited : boolean; magunitude : number; }[]
 
     constructor() {
         super()
@@ -32,26 +32,33 @@ export class WolfxManager extends EventEmitter {
                 const parsed = new WolflxParser( data )
                 
                 if( parsed.Serial === "1" ){
-                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , isEmited : true })
+                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , magunitude : parsed.Magunitude , isEmited : true })
                     this.emit('eew', parsed)
                     return;
                 }
                 
                 const EEWData = this.eewDatas.find( data => data.eventId === parsed.EventID );
                 if(!EEWData) {
-                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , isEmited : true });
+                    this.eewDatas.push({ eventId : parsed.EventID , Int : parsed.MaxIntensity , magunitude : parsed.Magunitude , isEmited : true });
                     this.emit('eew' , parsed)
+                    return;
+                }
+                if( parsed.isFinal ) {
+                    this.emit('eew', parsed);
+                    this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
                     return;
                 }
                 if( EEWData.Int !== parsed.MaxIntensity) {
                     this.emit('eew', parsed);
                     this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
-                    this.eewDatas.push({ eventId : EEWData.eventId , Int : parsed.MaxIntensity , isEmited : true })
+                    this.eewDatas.push({ eventId : EEWData.eventId , Int : parsed.MaxIntensity , magunitude : EEWData.magunitude , isEmited : true })
                 }
-                if( parsed.isFinal ) {
+                if( EEWData.magunitude !== parsed.Magunitude ) {
                     this.emit('eew', parsed);
                     this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
+                    this.eewDatas.push({ eventId : EEWData.eventId , Int : EEWData.Int , magunitude : parsed.Magunitude , isEmited : true })
                 }
+
             }
         })
         this.ws.on('close', () => this.recconnect())

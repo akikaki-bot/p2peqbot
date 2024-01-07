@@ -27,6 +27,13 @@ export namespace ChannelRegisterManagers {
                 }
             )
 
+        const ClientUser = await interaction.guild.members.fetch( interaction.client.user );
+
+        if( !ClientUser.permissions.has('SendMessages') ||  !ClientUser.permissions.has('ViewChannel') ){
+            interaction.reply({ content : "エラーが発生しました。" , ephemeral : true })
+            return interaction.user.send({content : `<#${interaction.channelId}>での権限が不足しています。\n・チャンネルを見る\n・メッセージを送る\nを最低でも権限として付与してください。`})
+        }
+
         const CategoryResolved = ResolveSendCategory( SendCategory );
         const result = await manager.register( interaction.guild.id , ChannelId , { type : CategoryResolved })
         if(result === 1) {

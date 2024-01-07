@@ -1,5 +1,4 @@
 
-
 export class WolflxParser {
 
     /** 発表元のタイプ */
