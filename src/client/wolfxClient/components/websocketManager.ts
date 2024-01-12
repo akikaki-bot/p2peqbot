@@ -52,11 +52,13 @@ export class WolfxManager extends EventEmitter {
                     this.emit('eew', parsed);
                     this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
                     this.eewDatas.push({ eventId : EEWData.eventId , Int : parsed.MaxIntensity , magunitude : EEWData.magunitude , isEmited : true })
+                    return;
                 }
                 if( EEWData.magunitude !== parsed.Magunitude ) {
                     this.emit('eew', parsed);
                     this.eewDatas.splice( this.eewDatas.indexOf( EEWData ), 1 );
                     this.eewDatas.push({ eventId : EEWData.eventId , Int : EEWData.Int , magunitude : parsed.Magunitude , isEmited : true })
+                    return;
                 }
 
             }

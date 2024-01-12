@@ -40,14 +40,14 @@ client.on('ready', async () => {
 
     let display = 0;
     setInterval(async () => {
-        const displayText = [`Producted by https://dev.shizen.lol/`, `/helpでコマンドの設定方法をご覧にいただけます。`, `${GetGuildCount()}鯖 ${await GetRegisteredChannelsCount()}箱`]
+        const displayText = [`Supported by https://dev.shizen.lol/`, `/helpでコマンドの設定方法をご覧にいただけます。`, `${GetGuildCount()}鯖 ${await GetRegisteredChannelsCount()}箱`]
         client.user?.setActivity({
             name : displayText[display]
         })
         display + 1 === displayText.length ? display = 0 : display++
     }, 10000)
 
-    await client.application.commands.set([
+    await client.application?.commands.set([
         new SlashCommandBuilder().setName('register').setDescription(`地震情報の送信登録をします。`).addNumberOption(option => option.setName(`category`).setMinValue(1).setMaxValue(4).setDescription(`1はすべての情報、2は警報のみ、3は予報・警報EEWのみ、4は地震情報のみです。`).setRequired(true)),
         new SlashCommandBuilder().setName('unregister').setDescription(`地震情報送信の登録解除をします。`),
         new SlashCommandBuilder().setName('help').setDescription(`このボットの説明です。`),
@@ -59,7 +59,7 @@ client.on('ready', async () => {
 client.on('interactionCreate', async ( interaction ) => {
     if( !interaction.isCommand() ) return;
     if( interaction.commandName === "register") { 
-        if( !interaction.memberPermissions.has( PermissionsBitField.Flags.ManageChannels )) { 
+        if( !interaction.memberPermissions?.has( PermissionsBitField.Flags.ManageChannels )) { 
             await interaction.reply({ content : "権限が足りません。チャンネルを管理する権限が必要です。" , ephemeral : true } )
             return;
         }
@@ -67,7 +67,7 @@ client.on('interactionCreate', async ( interaction ) => {
         return; 
     }
     if( interaction.commandName === "unregister" ) {
-        if( !interaction.memberPermissions.has( PermissionsBitField.Flags.ManageChannels )) { 
+        if( !interaction.memberPermissions?.has( PermissionsBitField.Flags.ManageChannels )) { 
             await interaction.reply({ content : "権限が足りません。チャンネルを管理する権限が必要です。" , ephemeral : true } )
             return;
         }
@@ -108,6 +108,10 @@ client.on('interactionCreate', async ( interaction ) => {
                 - 緊急地震速報メインAPI [Wolfx](https://api.wolfx.jp/)
                 - 地震情報メインAPI [P2P地震情報](https://www.p2pquake.net/)
                 
+            - 開発者
+                - あきかき (akikaki)
+
+            **Supported by [S-Server-Developers!](https://sdev.shizen.lol/)**
         `).setColor('Blue')
 
         interaction.reply({ embeds :[ embed ] , ephemeral : true })

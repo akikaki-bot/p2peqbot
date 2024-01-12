@@ -19,11 +19,13 @@ import {
 import { ResolveSindoString } from "./utils/resolveSindoNumber";
 import { IfBool, IfCancel, ResolveCancel } from "./utils/resolveCancel";
 import { ResolveSendCategory } from "./utils/resolveSendCategory";
+import { ScreenShot } from "./client/screenshotClient";
 
 
 
 const client = new P2PClient()
 const wolfxClient = new WolfxManager()
+const screenshotClient = new ScreenShot("https://p2pmap.aknet.tech/")
 
 client.on('ready', ( data ) => {
     console.log(`${data.connection} | ${data.wsurl}\n Successfully connected at p2p earthquake server. `)
@@ -67,7 +69,7 @@ client.on("earthquake", ( data ) => {
     }
 
     new ChannelSendManager(FirstInfomation).build();
-    new AreaSender(data.points, data.earthquake.maxScale )
+    new AreaSender(data.points, data.earthquake.maxScale , screenshotClient)
 })
 
 client.on('infomations', (data) => console.log(data.code))

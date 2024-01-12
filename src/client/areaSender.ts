@@ -4,21 +4,39 @@ import { ChannelSendManager, IChannelSendManager } from "./"
 import { ResolveSindoColor } from "../utils/resolveShindoColor";
 import { Points, Scale } from "p2peq_event/dist/src/types/jmaquake";
 import { ResolveSendCategory } from "../utils/resolveSendCategory";
+import { ScreenShot } from "./screenshotClient";
 
 
 export class AreaSender {
 
     private point: Points[]
     private maxScale : Scale | -1
+    private ScreenShotClient : ScreenShot
 
-    constructor(data: Points[], maxScale : Scale | -1 ) {
+    constructor(data: Points[], maxScale : Scale | -1 , client : ScreenShot ) {
         this.point = data;
         this.maxScale = maxScale
+        this.ScreenShotClient = client;
 
         this.init()
     }
 
     private async init() {
+        this.ScreenShotClient.takeScreenShot()
+        .then( async buff => {;
+            const Infomation = {    
+                title : `地域ごとの震度分布`,
+                description : "緊急地震速報地域区分GISデータ提供 : 気象庁",
+                color : ResolveSindoColor( this.maxScale ),
+                sendCategory : [ ResolveSendCategory( 1 ), ResolveSendCategory( 4 ) ],
+                imageBuffer : buff
+            } as IChannelSendManager
+
+            await new ChannelSendManager( Infomation ).buildWithImage();
+        })
+    }
+
+    private async _init() {
         const PrefChunked = this.prefChunk(this.point)
         const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<Points>(chunked.areas, 30) }))
         const chunkedInfo = Points.map(points => ({ name: points.name, areas : points.areas.map(chunkedArea => chunkedArea.map((area) => `[${ResolveScale(area.scale)}] ${area.addr}`)) }))
