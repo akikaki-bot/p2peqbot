@@ -42,10 +42,13 @@ export class ScreenShot {
     }
 
     async takeScreenShot() : Promise<Buffer> {
-        const Buff = await this.page.screenshot({
+        await this.page.screenshot({
             fullPage : true
         })
-        await setTimeout( 900 )
+        const Buff =  await this.page.screenshot({
+            fullPage : true
+        })
+        await setTimeout( 500 )
         return Buff;
     }
 }
