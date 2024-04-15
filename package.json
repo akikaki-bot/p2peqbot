@@ -9,5 +9,11 @@
   "devDependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "prestart" : "npx ts-node src/index.ts",
+    "build" : "npx tsc",
+    "buildStart" : "npx tsc && node dist/index.js",
+    "production" : "node dist/index.js"
   }
 }
