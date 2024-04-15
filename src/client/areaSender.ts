@@ -13,15 +13,15 @@ export class AreaSender {
     private maxScale : Scale | -1
     private ScreenShotClient : ScreenShot
 
-    constructor(data: Points[], maxScale : Scale | -1 , client : ScreenShot ) {
+    constructor(data: Points[], maxScale : Scale | -1 ) {
         this.point = data;
         this.maxScale = maxScale
-        this.ScreenShotClient = client;
+        //this.ScreenShotClient = client;
 
         this.init()
     }
 
-    private async init() {
+    private async _init() {
         this.ScreenShotClient.takeScreenShot()
         .then( async buff => {;
             const Infomation = {    
@@ -36,7 +36,7 @@ export class AreaSender {
         })
     }
 
-    private async _init() {
+    private async init() {
         const PrefChunked = this.prefChunk(this.point)
         const Points = PrefChunked.map((chunked) => ({ name : chunked.name, areas: this.chunkArray<Points>(chunked.areas, 30) }))
         const chunkedInfo = Points.map(points => ({ name: points.name, areas : points.areas.map(chunkedArea => chunkedArea.map((area) => `[${ResolveScale(area.scale)}] ${area.addr}`)) }))
@@ -57,7 +57,6 @@ export class AreaSender {
 
         const FlatedManager = Manager.flat(2).filter((val) => typeof val !== "number")
         FlatedManager.map(manager => new ChannelSendManager(manager).build())
-        
     }
 
     private prefChunk<T extends Points>(prefInfos : T[]) {

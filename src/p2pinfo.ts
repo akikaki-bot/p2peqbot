@@ -25,7 +25,10 @@ import { ScreenShot } from "./client/screenshotClient";
 
 const client = new P2PClient()
 const wolfxClient = new WolfxManager()
+// 非推奨です。まぁ不安定なんですね。
+/*
 const screenshotClient = new ScreenShot("https://p2pmap.aknet.tech/")
+*/
 
 client.on('ready', ( data ) => {
     console.log(`${data.connection} | ${data.wsurl}\n Successfully connected at p2p earthquake server. `)
@@ -69,7 +72,7 @@ client.on("earthquake", ( data ) => {
     }
 
     new ChannelSendManager(FirstInfomation).build();
-    new AreaSender(data.points, data.earthquake.maxScale , screenshotClient)
+    new AreaSender(data.points, data.earthquake.maxScale)
 })
 
 client.on('infomations', (data) => console.log(data.code))
