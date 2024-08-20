@@ -13,12 +13,12 @@ export class AreaSender {
     private maxScale : Scale | -1
     private ScreenShotClient : ScreenShot
 
-    constructor(data: Points[], maxScale : Scale | -1 ) {
+    constructor(data: Points[], maxScale : Scale | -1, client : ScreenShot ) {
         this.point = data;
         this.maxScale = maxScale
-        //this.ScreenShotClient = client;
+        this.ScreenShotClient = client;
 
-        this.init()
+        this._init()
     }
 
     private async _init() {

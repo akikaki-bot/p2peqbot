@@ -7,8 +7,6 @@ import { WolflxParser } from "./wolfxParser";
 import { IHeartbeat } from "./heartbeat";
 
 export class WolfxManager extends EventEmitter {
-
-
     private ws : WebSocket;
     
     private eewDatas : { eventId : string; Int : string; isEmited : boolean; magunitude : number; }[]

@@ -19,6 +19,10 @@ export class ScreenShot {
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
         const page = await browser.newPage();
+        await page.setViewport({
+            width: 1280,
+            height: 720
+        })
         await page.goto( this.uri );
         this.page = page;
         console.log(`[Pupetter] ScreenShot Incetance Ready!`)
@@ -36,6 +40,10 @@ export class ScreenShot {
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
         const page = await browser.newPage();
+        await page.setViewport({
+            width: 1280,
+            height: 720
+        })
         await page.goto( this.uri );
         this.page = page;
         console.log(`[Pupetter] ScreenShot incetance has been restarted successfully.`)

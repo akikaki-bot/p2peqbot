@@ -10,6 +10,7 @@ import { Token } from "../constants/token";
 import * as Keyv from "keyv"
 import { SendCategory } from "../utils/resolveSendCategory";
 import { ChannelRegisterManagers } from "../components/registerManager";
+import { screenshotClient } from "../p2pinfo";
 
 
 
@@ -40,7 +41,7 @@ client.on('ready', async () => {
 
     let display = 0;
     setInterval(async () => {
-        const displayText = [`Supported by https://dev.shizen.lol/`, `/helpでコマンドの設定方法をご覧にいただけます。`, `${GetGuildCount()}鯖 ${await GetRegisteredChannelsCount()}箱`]
+        const displayText = [`/helpでコマンドの設定方法をご覧にいただけます。`, `${GetGuildCount()}鯖 ${await GetRegisteredChannelsCount()}箱`]
         client.user?.setActivity({
             name : displayText[display]
         })
@@ -51,7 +52,8 @@ client.on('ready', async () => {
         new SlashCommandBuilder().setName('register').setDescription(`地震情報の送信登録をします。`).addNumberOption(option => option.setName(`category`).setMinValue(1).setMaxValue(4).setDescription(`1はすべての情報、2は警報のみ、3は予報・警報EEWのみ、4は地震情報のみです。`).setRequired(true)),
         new SlashCommandBuilder().setName('unregister').setDescription(`地震情報送信の登録解除をします。`),
         new SlashCommandBuilder().setName('help').setDescription(`このボットの説明です。`),
-        new SlashCommandBuilder().setName('chsetting').setDescription(`チャンネルの設定を確認できます。`)
+        new SlashCommandBuilder().setName('chsetting').setDescription(`チャンネルの設定を確認できます。`),
+        new SlashCommandBuilder().setName('takeinfo').setDescription(`スクリーンショットのテスト。`)
     ])
 })
 
@@ -73,6 +75,11 @@ client.on('interactionCreate', async ( interaction ) => {
         }
         await ChannelRegisterManagers.UnRegister( interaction )  
         return; 
+    }
+    if( interaction.commandName === "takeinfo") {
+        screenshotClient.takeScreenShot().then( async buff => {
+            await interaction.reply({ files : [ buff ] , ephemeral : true })
+        })
     }
     if( interaction.commandName === "chsetting") {
         await ChannelRegisterManagers.CheckSetting( interaction )
@@ -111,7 +118,6 @@ client.on('interactionCreate', async ( interaction ) => {
             - 開発者
                 - あきかき (akikaki)
 
-            **Supported by [S-Server-Developers!](https://sdev.shizen.lol/)**
         `).setColor('Blue')
 
         interaction.reply({ embeds :[ embed ] , ephemeral : true })
