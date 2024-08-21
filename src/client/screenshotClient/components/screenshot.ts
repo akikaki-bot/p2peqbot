@@ -50,13 +50,19 @@ export class ScreenShot {
     }
 
     async takeScreenShot() : Promise<Buffer> {
+
+        if( !(this.page instanceof Page) ) {
+            console.log(`[Pupetter] Page instance is not ready. try to restart.`);
+            await this.restart();
+        }
+
         await this.page.screenshot({
             fullPage : true
         })
         const Buff =  await this.page.screenshot({
             fullPage : true
         })
-        await setTimeout( 500 )
+        await setTimeout( 2500 )
         return Buff;
     }
 }
