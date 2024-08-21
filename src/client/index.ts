@@ -77,8 +77,9 @@ client.on('interactionCreate', async ( interaction ) => {
         return; 
     }
     if( interaction.commandName === "takeinfo") {
+        await interaction.deferReply({ ephemeral: true })
         screenshotClient.takeScreenShot().then( async buff => {
-            await interaction.reply({ files : [ buff ] , ephemeral : true })
+            await interaction.editReply({ files : [ buff ] })
         })
     }
     if( interaction.commandName === "chsetting") {
